@@ -1,1 +1,457 @@
 
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>502 — Gateway Bermasalah | ART Data Network</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070d18;
+    --panel:#0d1729;
+    --panel-2:#0a1322;
+    --border:#1c2b45;
+    --grid-line: rgba(45,212,199,0.05);
+    --text-primary:#e7ecf5;
+    --text-secondary:#8291ab;
+    --text-muted:#4c586f;
+    --cyan:#2dd4c7;
+    --cyan-dim: rgba(45,212,199,0.18);
+    --amber:#f2a93b;
+    --red:#ef5a72;
+    --container-w: 100%;
+    --diagram-w: 420px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; margin:0; }
+  html{ font-size: 15px; }
+  @media (min-width: 481px){ html{ font-size: 16px; } }
+  @media (min-width: 641px){ html{ font-size: 17px; } }
+  @media (min-width: 1024px){ html{ font-size: 18px; } }
+  @media (min-width: 1600px){ html{ font-size: 21px; } }
+  @media (min-width: 2400px){ html{ font-size: 26px; } }
+  body{
+    background:
+      linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0/44px 44px,
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0/44px 44px,
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(45,212,199,0.07), transparent 60%),
+      var(--bg);
+    color:var(--text-primary);
+    font-family:'Space Grotesk', sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-height:100%;
+    padding: 28px 20px 40px;
+  }
+  a{ color:inherit; }
+
+  /* top bar */
+  .topbar{
+    width:100%;
+    max-width: min(920px, var(--container-w));
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 0.6rem 1.1rem;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    margin-bottom:2.1rem;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; min-width:0; }
+  .brand img{
+    height:1.9rem; width:auto; display:block; object-fit:contain;
+    filter: drop-shadow(0 0 6px rgba(45,212,199,0.25));
+  }
+  .brand-text{ line-height:1.15; min-width:0; }
+  .brand-text .name{ font-weight:600; font-size:0.95rem; color:var(--text-primary); white-space:nowrap; }
+  .brand-text .sub{ font-size:0.72rem; color:var(--text-muted); font-family:'IBM Plex Mono', monospace; white-space:nowrap; }
+
+  .status{
+    display:flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:var(--text-secondary);
+    letter-spacing:0.03em;
+    white-space:nowrap;
+  }
+  .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--cyan);
+    box-shadow:0 0 0 0 var(--cyan-dim);
+    animation: pulseDot 2.2s ease-out infinite;
+    flex-shrink:0;
+  }
+  .dot.dot-warn{
+    background: var(--amber);
+    box-shadow:0 0 0 0 rgba(242,169,59,0.35);
+    animation: pulseDotWarn 1.3s ease-out infinite;
+  }
+  @keyframes pulseDot{
+    0%{ box-shadow:0 0 0 0 var(--cyan-dim); }
+    70%{ box-shadow:0 0 0 8px rgba(45,212,199,0); }
+    100%{ box-shadow:0 0 0 0 rgba(45,212,199,0); }
+  }
+  @keyframes pulseDotWarn{
+    0%{ box-shadow:0 0 0 0 rgba(242,169,59,0.4); }
+    70%{ box-shadow:0 0 0 8px rgba(242,169,59,0); }
+    100%{ box-shadow:0 0 0 0 rgba(242,169,59,0); }
+  }
+
+  /* main panel */
+  .panel{
+    width:100%;
+    max-width: min(920px, var(--container-w));
+    border:1px solid var(--border);
+    border-radius:8px;
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    padding: 0.5rem 0.5rem 2.2rem;
+    opacity:0;
+    transform: translateY(8px);
+    animation: rise 0.6s ease forwards;
+  }
+  @keyframes rise{ to{ opacity:1; transform:none; } }
+
+  .panel-head{
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 10px 18px 14px;
+    border-bottom:1px solid var(--border);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    color:var(--text-muted);
+    letter-spacing:0.04em;
+  }
+  .panel-head span.err{ color:var(--red); }
+  .panel-head span.err.err-warn{ color:var(--amber); }
+
+  /* diagram */
+  .diagram-wrap{
+    display:flex; justify-content:center;
+    padding: 26px 10px 6px;
+  }
+  svg.topology{ width:100%; max-width: var(--diagram-w); height:auto; }
+  .node-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9.5px;
+    fill: var(--text-secondary);
+  }
+  .node-label.down{ fill: var(--red); font-weight:600; }
+  .node-label.warn{ fill: var(--amber); font-weight:600; }
+  .link-ok{
+    stroke: var(--cyan);
+    stroke-width:1.4;
+    opacity:0.55;
+  }
+  .link-warn{
+    stroke: var(--amber);
+    stroke-width:1.6;
+    stroke-dasharray: 5 5;
+    animation: dash 1.4s linear infinite;
+    opacity:0.85;
+  }
+  @keyframes dash{ to{ stroke-dashoffset:-20; } }
+  .n-ok{ fill:#0d1729; stroke:var(--cyan); stroke-width:1.6; }
+  .n-ok-pulse{
+    fill:none; stroke:var(--cyan); stroke-width:1;
+    opacity:0.5;
+    transform-origin: center;
+    animation: nodePulse 2.4s ease-out infinite;
+  }
+  .n-warn{ fill:#0d1729; stroke:var(--amber); stroke-width:1.8; }
+  .n-warn-pulse{
+    fill:none; stroke:var(--amber); stroke-width:1;
+    opacity:0.6;
+    transform-origin: center;
+    animation: nodePulse 1.5s ease-out infinite;
+  }
+  @keyframes nodePulse{
+    0%{ transform:scale(1); opacity:0.55; }
+    100%{ transform:scale(1.9); opacity:0; }
+  }
+  .packet{ fill:var(--cyan); filter: drop-shadow(0 0 3px rgba(45,212,199,0.9)); }
+  .packet-warn{ fill:var(--amber); filter: drop-shadow(0 0 3px rgba(242,169,59,0.9)); }
+  .excl-mark{ stroke:var(--amber); stroke-width:2; stroke-linecap:round; }
+  .excl-dot{ fill:var(--amber); }
+
+  /* heading + copy */
+  .content{ padding: 8px 26px 0; text-align:left; }
+  .eyebrow-code{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.75rem;
+    color:var(--cyan);
+    margin: 4px 0 6px;
+  }
+  .eyebrow-code.eyebrow-warn{ color:var(--amber); }
+  h1{
+    font-size: clamp(1.9rem, 4.5vw, 2.7rem);
+    font-weight:700;
+    margin:0 0 10px;
+    letter-spacing:-0.01em;
+  }
+  p.desc{
+    color:var(--text-secondary);
+    max-width:56ch;
+    line-height:1.6;
+    margin:0 0 26px;
+    font-size:0.98rem;
+  }
+
+  /* traceroute box */
+  .term{
+    background: #050a13;
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:16px 18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    line-height:1.75;
+    overflow-x:auto;
+    margin-bottom:30px;
+  }
+  .term .line{ white-space:pre; opacity:0; animation: fadeIn 0.25s ease forwards; }
+  .term .ok{ color:var(--cyan); }
+  .term .fail{ color:var(--red); }
+  .term .cmd{ color:var(--text-primary); }
+  .term .dim{ color:var(--text-muted); }
+  @keyframes fadeIn{ to{ opacity:1; } }
+  .cursor{
+    display:inline-block; width:7px; height:14px; background:var(--cyan);
+    vertical-align:-2px; margin-left:2px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* actions */
+  .actions{ display:flex; flex-wrap:wrap; gap:12px; margin-bottom:6px; }
+  .btn{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:0.92rem;
+    padding: 11px 22px;
+    border-radius:5px;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    -webkit-appearance:none;
+    appearance:none;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn:focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+  .btn-primary{
+    background: var(--amber);
+    color:#241a06;
+    border:1px solid var(--amber);
+  }
+  .btn-primary:hover{ transform: translateY(-1px); background:#f6b657; }
+  .btn-ghost{
+    background:transparent;
+    color:var(--text-primary);
+    border:1px solid var(--border);
+  }
+  .btn-ghost:hover{ transform: translateY(-1px); border-color:var(--cyan); }
+
+  footer{
+    width:100%; max-width: min(920px, var(--container-w));
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:1.4rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    color:var(--text-muted);
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .signal{ display:flex; align-items:flex-end; gap:2px; height:12px; }
+  .signal span{ width:3px; background:var(--text-muted); display:block; }
+  .signal span:nth-child(1){ height:4px; }
+  .signal span:nth-child(2){ height:7px; }
+  .signal span:nth-child(3){ height:10px; background:var(--cyan); }
+  .signal span:nth-child(4){ height:12px; background:var(--cyan); }
+
+  /* ===== HP kecil (<= 400px) ===== */
+  @media (max-width: 400px){
+    body{ padding: 16px 12px 28px; }
+    .topbar{ padding: 0.55rem 0.8rem; }
+    .content{ padding: 4px 14px 0; }
+    .actions{ flex-direction:column; align-items:stretch; }
+    .btn{ justify-content:center; }
+    .term{ padding:12px 12px; font-size:0.72rem; }
+  }
+
+  /* ===== HP umum (401px - 640px) ===== */
+  @media (max-width: 640px){
+    .content{ padding: 4px 18px 0; }
+    .brand-text .sub{ display:none; }
+    footer{ justify-content:center; text-align:center; }
+    :root{ --diagram-w: 360px; }
+  }
+
+  /* ===== Tablet (641px - 1023px) ===== */
+  @media (min-width: 641px) and (max-width: 1023px){
+    :root{ --diagram-w: 460px; --container-w: 680px; }
+    .content{ padding: 10px 34px 0; }
+    .panel{ padding: 0.6rem 0.6rem 2.6rem; }
+  }
+
+  /* ===== Laptop / Desktop (1024px - 1599px) ===== */
+  @media (min-width: 1024px){
+    :root{ --diagram-w: 500px; --container-w: 940px; }
+  }
+
+  /* ===== Layar besar / TV (>= 1600px) ===== */
+  @media (min-width: 1600px){
+    :root{ --diagram-w: 640px; --container-w: 1240px; }
+    body{ padding: 3.2rem 3rem 3.5rem; }
+    .topbar{ padding: 0.9rem 1.6rem; margin-bottom: 3rem; }
+    .panel{ padding: 0.9rem 0.9rem 3.4rem; border-radius:12px; }
+    .content{ padding: 0.6rem 3rem 0; }
+    .term{ padding: 1.4rem 1.7rem; }
+    .btn{ padding: 0.85rem 1.9rem; }
+  }
+
+  /* ===== 4K / TV sangat besar (>= 2400px) ===== */
+  @media (min-width: 2400px){
+    :root{ --diagram-w: 780px; --container-w: 1500px; }
+  }
+
+  /* ===== HP orientasi landscape (layar pendek) ===== */
+  @media (max-height: 480px) and (orientation: landscape){
+    body{ padding: 14px 20px 20px; }
+    .topbar{ margin-bottom: 14px; padding: 6px 14px; }
+    .diagram-wrap{ padding: 10px 10px 0; }
+    :root{ --diagram-w: 260px; }
+    .term{ margin-bottom: 14px; }
+    h1{ margin-bottom: 6px; }
+    p.desc{ margin-bottom: 14px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand">
+      <img src="https://raw.githubusercontent.com/arthasa28/arthasa28.github.io/master/1080px.png"
+           alt="Logo ART Data Network"
+           onerror="this.style.display='none'">
+      <div class="brand-text">
+        <div class="name">ART Data Network</div>
+        <div class="sub">Network &amp; Hosting Infrastructure</div>
+      </div>
+    </div>
+    <div class="status"><span class="dot dot-warn"></span> GATEWAY BERMASALAH</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <span>NOC / DIAGNOSTIK GATEWAY</span>
+      <span class="err err-warn">STATUS: 502 BAD GATEWAY</span>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg class="topology" viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+        <!-- links -->
+        <path id="pSR"  class="link-ok"   d="M250,50 L92,140" fill="none"/>
+        <path id="pSSw" class="link-ok"   d="M250,50 L408,140" fill="none"/>
+        <path            class="link-ok"   d="M92,140 L408,140" fill="none"/>
+        <path            class="link-warn" d="M92,140 L250,232" fill="none"/>
+        <path            class="link-warn" d="M408,140 L250,232" fill="none"/>
+
+        <!-- traveling packets -->
+        <circle class="packet" r="3.2">
+          <animateMotion dur="2.1s" repeatCount="indefinite"><mpath href="#pSR"/></animateMotion>
+        </circle>
+        <circle class="packet" r="3.2">
+          <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#pSSw"/></animateMotion>
+        </circle>
+
+        <!-- server node -->
+        <circle class="n-ok-pulse" cx="250" cy="50" r="14"/>
+        <circle class="n-ok" cx="250" cy="50" r="13"/>
+        <text class="node-label" x="250" y="28" text-anchor="middle">SERVER-01</text>
+
+        <!-- router node -->
+        <circle class="n-ok-pulse" cx="92" cy="140" r="14"/>
+        <circle class="n-ok" cx="92" cy="140" r="13"/>
+        <text class="node-label" x="92" y="118" text-anchor="middle">RTR-CORE-02</text>
+
+        <!-- switch node -->
+        <circle class="n-ok-pulse" cx="408" cy="140" r="14"/>
+        <circle class="n-ok" cx="408" cy="140" r="13"/>
+        <text class="node-label" x="408" y="118" text-anchor="middle">SW-ACCESS-04</text>
+
+        <!-- upstream app server returning invalid response -->
+        <circle class="n-warn-pulse" cx="250" cy="232" r="15"/>
+        <circle class="n-warn" cx="250" cy="232" r="14"/>
+        <line class="excl-mark" x1="250" y1="224" x2="250" y2="233"/>
+        <circle class="excl-dot" cx="250" cy="239" r="1.6"/>
+        <text class="node-label warn" x="250" y="257" text-anchor="middle">UPSTREAM-APP</text>
+      </svg>
+    </div>
+
+    <div class="content">
+      <div class="eyebrow-code eyebrow-warn">Kode Error: 502 · Node: GW-EDGE-01</div>
+      <h1>Gateway kami tidak mendapat balasan yang valid.</h1>
+      <p class="desc">
+        Permintaan Anda berhasil sampai ke gateway kami, tapi server upstream di baliknya
+        mengirim balasan yang rusak, kosong, atau tidak sesuai format. Ini biasanya sementara —
+        server kami mungkin sedang restart, overload, atau dalam proses maintenance.
+      </p>
+
+      <div class="term" id="term" aria-label="Log traceroute">
+        <!-- filled by JS -->
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="location.reload()" type="button">↻ Muat Ulang Halaman</button>
+        <a class="btn btn-ghost" href="/">Kembali ke Beranda</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>ART Data Network — solusi hosting &amp; infrastruktur jaringan</span>
+    <span class="signal"><span></span><span></span><span></span><span></span></span>
+  </footer>
+
+  <script>
+    const host = window.location.hostname || 'artdatanetwork.id';
+    const lines = [
+      { text: '$ curl -I https://' + host, cls: 'cmd' },
+      { text: ' connecting to gw-edge-01.artdatanetwork.id ...   [OK]', cls: 'ok' },
+      { text: ' tls handshake                                    [OK]', cls: 'ok' },
+      { text: ' forwarding request to upstream app-server ...    [OK]', cls: 'ok' },
+      { text: ' waiting for upstream response ...', cls: 'dim' },
+      { text: ' upstream returned malformed response', cls: 'fail' },
+      { text: ' retry 1/3 ...  failed', cls: 'fail' },
+      { text: ' retry 2/3 ...  failed', cls: 'fail' },
+      { text: '', cls: 'dim' },
+      { text: 'HTTP/1.1 502 Bad Gateway', cls: 'fail' },
+    ];
+    const term = document.getElementById('term');
+    let delay = 550;
+    lines.forEach((l, i) => {
+      const el = document.createElement('div');
+      el.className = 'line ' + l.cls;
+      el.textContent = l.text;
+      el.style.animationDelay = delay + 'ms';
+      term.appendChild(el);
+      delay += (l.text.length ? 260 : 120);
+    });
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    cursor.style.opacity = '0';
+    cursor.style.animation = `fadeIn 0.2s ease forwards ${delay}ms, blink 1s step-end infinite ${delay}ms`;
+    term.appendChild(cursor);
+  </script>
+
+</body>
+</html>
