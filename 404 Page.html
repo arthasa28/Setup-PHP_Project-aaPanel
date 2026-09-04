@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Website Not Found — Domain Belum Terhubung | ART Data Network</title>
+<title>404 — Rute Tidak Ditemukan | ART Data Network</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -21,7 +21,6 @@
     --cyan-dim: rgba(45,212,199,0.18);
     --amber:#f2a93b;
     --red:#ef5a72;
-    --slate:#7c93b8;
     --container-w: 100%;
     --diagram-w: 420px;
   }
@@ -91,16 +90,6 @@
     70%{ box-shadow:0 0 0 8px rgba(45,212,199,0); }
     100%{ box-shadow:0 0 0 0 rgba(45,212,199,0); }
   }
-  .dot.dot-neutral{
-    background: var(--slate);
-    box-shadow:0 0 0 0 rgba(124,147,184,0.35);
-    animation: pulseDotNeutral 3s ease-out infinite;
-  }
-  @keyframes pulseDotNeutral{
-    0%{ box-shadow:0 0 0 0 rgba(124,147,184,0.35); }
-    70%{ box-shadow:0 0 0 7px rgba(124,147,184,0); }
-    100%{ box-shadow:0 0 0 0 rgba(124,147,184,0); }
-  }
 
   /* main panel */
   .panel{
@@ -126,7 +115,6 @@
     letter-spacing:0.04em;
   }
   .panel-head span.err{ color:var(--red); }
-  .panel-head span.err.err-neutral{ color:var(--slate); }
 
   /* diagram */
   .diagram-wrap{
@@ -140,17 +128,17 @@
     fill: var(--text-secondary);
   }
   .node-label.down{ fill: var(--red); font-weight:600; }
-  .node-label.neutral{ fill: var(--slate); font-weight:600; }
   .link-ok{
     stroke: var(--cyan);
     stroke-width:1.4;
     opacity:0.55;
   }
-  .link-neutral{
-    stroke: var(--slate);
-    stroke-width:1.4;
-    stroke-dasharray: 3 6;
-    opacity:0.55;
+  .link-down{
+    stroke: var(--red);
+    stroke-width:1.6;
+    stroke-dasharray: 5 5;
+    animation: dash 1.4s linear infinite;
+    opacity:0.85;
   }
   @keyframes dash{ to{ stroke-dashoffset:-20; } }
   .n-ok{ fill:#0d1729; stroke:var(--cyan); stroke-width:1.6; }
@@ -160,33 +148,28 @@
     transform-origin: center;
     animation: nodePulse 2.4s ease-out infinite;
   }
-  .n-neutral{ fill:#0d1729; stroke:var(--slate); stroke-width:1.6; stroke-dasharray:3 3; }
-  .n-neutral-pulse{
-    fill:none; stroke:var(--slate); stroke-width:1;
-    opacity:0.45;
+  .n-down{ fill:#0d1729; stroke:var(--red); stroke-width:1.8; }
+  .n-down-pulse{
+    fill:none; stroke:var(--red); stroke-width:1;
+    opacity:0.6;
     transform-origin: center;
-    animation: nodePulseSlow 3.2s ease-out infinite;
+    animation: nodePulse 1.5s ease-out infinite;
   }
   @keyframes nodePulse{
     0%{ transform:scale(1); opacity:0.55; }
     100%{ transform:scale(1.9); opacity:0; }
   }
-  @keyframes nodePulseSlow{
-    0%{ transform:scale(1); opacity:0.4; }
-    100%{ transform:scale(1.7); opacity:0; }
-  }
   .packet{ fill:var(--cyan); filter: drop-shadow(0 0 3px rgba(45,212,199,0.9)); }
-  .qmark-text{ fill:var(--slate); font-family:'IBM Plex Mono', monospace; font-weight:600; }
+  .x-mark{ stroke:var(--red); stroke-width:1.8; stroke-linecap:round; }
 
   /* heading + copy */
   .content{ padding: 8px 26px 0; text-align:left; }
   .eyebrow-code{
     font-family:'IBM Plex Mono', monospace;
     font-size:0.75rem;
-    color:var(--cyan);
+    color:var(--amber);
     margin: 4px 0 6px;
   }
-  .eyebrow-code.eyebrow-neutral{ color:var(--slate); }
   h1{
     font-size: clamp(1.9rem, 4.5vw, 2.7rem);
     font-weight:700;
@@ -216,7 +199,6 @@
   .term .line{ white-space:pre; opacity:0; animation: fadeIn 0.25s ease forwards; }
   .term .ok{ color:var(--cyan); }
   .term .fail{ color:var(--red); }
-  .term .miss{ color:var(--slate); }
   .term .cmd{ color:var(--text-primary); }
   .term .dim{ color:var(--text-muted); }
   @keyframes fadeIn{ to{ opacity:1; } }
@@ -239,9 +221,6 @@
     display:inline-flex;
     align-items:center;
     gap:8px;
-    cursor:pointer;
-    -webkit-appearance:none;
-    appearance:none;
     transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
   }
   .btn:focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
@@ -342,20 +321,20 @@
   <div class="topbar">
     <div class="brand">
       <img src="https://raw.githubusercontent.com/arthasa28/arthasa28.github.io/master/1080px.png"
-           alt="Logo ART Data Network"
+           alt="Logo Portal Jadwal"
            onerror="this.style.display='none'">
       <div class="brand-text">
         <div class="name">ART Data Network</div>
         <div class="sub">Network &amp; Hosting Infrastructure</div>
       </div>
     </div>
-    <div class="status"><span class="dot"></span> SERVER AKTIF</div>
+    <div class="status"><span class="dot"></span> JARINGAN AKTIF</div>
   </div>
 
   <div class="panel">
     <div class="panel-head">
-      <span>NOC / RESOLUSI DOMAIN</span>
-      <span class="err err-neutral">STATUS: WEBSITE NOT FOUND</span>
+      <span>NOC / DIAGNOSTIK RUTE</span>
+      <span class="err">STATUS: 404 NOT FOUND</span>
     </div>
 
     <div class="diagram-wrap">
@@ -364,8 +343,8 @@
         <path id="pSR"  class="link-ok"   d="M250,50 L92,140" fill="none"/>
         <path id="pSSw" class="link-ok"   d="M250,50 L408,140" fill="none"/>
         <path            class="link-ok"   d="M92,140 L408,140" fill="none"/>
-        <path            class="link-neutral" d="M92,140 L250,232" fill="none"/>
-        <path            class="link-neutral" d="M408,140 L250,232" fill="none"/>
+        <path            class="link-down" d="M92,140 L250,232" fill="none"/>
+        <path            class="link-down" d="M408,140 L250,232" fill="none"/>
 
         <!-- traveling packets -->
         <circle class="packet" r="3.2">
@@ -378,42 +357,42 @@
         <!-- server node -->
         <circle class="n-ok-pulse" cx="250" cy="50" r="14"/>
         <circle class="n-ok" cx="250" cy="50" r="13"/>
-        <text class="node-label" x="250" y="28" text-anchor="middle">DNS-RESOLVER</text>
+        <text class="node-label" x="250" y="28" text-anchor="middle">SERVER-01</text>
 
         <!-- router node -->
         <circle class="n-ok-pulse" cx="92" cy="140" r="14"/>
         <circle class="n-ok" cx="92" cy="140" r="13"/>
-        <text class="node-label" x="92" y="118" text-anchor="middle">GW-EDGE-01</text>
+        <text class="node-label" x="92" y="118" text-anchor="middle">RTR-CORE-02</text>
 
         <!-- switch node -->
         <circle class="n-ok-pulse" cx="408" cy="140" r="14"/>
         <circle class="n-ok" cx="408" cy="140" r="13"/>
-        <text class="node-label" x="408" y="118" text-anchor="middle">NGINX-CORE</text>
+        <text class="node-label" x="408" y="118" text-anchor="middle">SW-ACCESS-04</text>
 
-        <!-- no vhost configured for this domain -->
-        <circle class="n-neutral-pulse" cx="250" cy="232" r="15"/>
-        <circle class="n-neutral" cx="250" cy="232" r="14"/>
-        <text class="qmark-text" x="250" y="237" text-anchor="middle" font-size="13">?</text>
-        <text class="node-label neutral" x="250" y="257" text-anchor="middle">VHOST TIDAK ADA</text>
+        <!-- broken / requested page node -->
+        <circle class="n-down-pulse" cx="250" cy="232" r="15"/>
+        <circle class="n-down" cx="250" cy="232" r="14"/>
+        <line class="x-mark" x1="244" y1="226" x2="256" y2="238"/>
+        <line class="x-mark" x1="256" y1="226" x2="244" y2="238"/>
+        <text class="node-label down" x="250" y="257" text-anchor="middle">RUTE DIMINTA</text>
       </svg>
     </div>
 
     <div class="content">
-      <div class="eyebrow-code eyebrow-neutral">Status: Domain Belum Terhubung · Node: NGINX-CORE</div>
-      <h1>Domain ini belum terhubung ke situs apa pun.</h1>
+      <div class="eyebrow-code">Kode Error: 404 · Node: EDGE-04</div>
+      <h1>Rute ini tidak terdaftar di jaringan kami.</h1>
       <p class="desc">
-        Server kami menerima permintaan untuk domain ini dengan benar, tapi belum ada konfigurasi
-        website (virtual host) yang cocok untuknya. Biasanya ini terjadi karena domain baru saja
-        diarahkan ke server, atau situsnya belum dibuat/diaktifkan di panel hosting.
+        Halaman yang Anda tuju sudah dipindahkan, diganti namanya, atau memang belum pernah ada.
+        Paket data kami sampai ke switch akses, tapi tidak menemukan tujuan akhirnya.
       </p>
 
-      <div class="term" id="term" aria-label="Log resolusi domain">
+      <div class="term" id="term" aria-label="Log traceroute">
         <!-- filled by JS -->
       </div>
 
       <div class="actions">
-        <a class="btn btn-primary" href="https://artdatanetwork.id">Hubungi ART Data Network</a>
-        <button class="btn btn-ghost" onclick="location.reload()" type="button">↻ Coba Lagi</button>
+        <a class="btn btn-primary" href="/">↩ Kembali ke Beranda</a>
+        <a class="btn btn-ghost" href="https://artdatanetwork.id">Kunjungi ART Data Network</a>
       </div>
     </div>
   </div>
@@ -424,16 +403,16 @@
   </footer>
 
   <script>
-    const host = window.location.hostname || 'domain-anda.id';
+    const host = window.location.hostname || 'artdatanetwork.id';
     const lines = [
-      { text: '$ resolve ' + host, cls: 'cmd' },
-      { text: ' DNS A record lookup ...                          [OK]', cls: 'ok' },
-      { text: ' connecting to gw-edge-01.artdatanetwork.id ...   [OK]', cls: 'ok' },
-      { text: ' nginx: mencocokkan server_name "' + host + '" ...', cls: 'dim' },
-      { text: ' tidak ada server block yang cocok', cls: 'miss' },
-      { text: ' fallback ke default_server', cls: 'miss' },
+      { text: '$ traceroute ' + host, cls: 'cmd' },
+      { text: ' 1  gw-edge-01.artdatanetwork.id      1.204 ms   [OK]', cls: 'ok' },
+      { text: ' 2  core-rtr-02.telkom-noc.id          3.871 ms   [OK]', cls: 'ok' },
+      { text: ' 3  sw-access-04.telkom-noc.id         6.532 ms   [OK]', cls: 'ok' },
+      { text: ' 4  * * *  request timed out', cls: 'fail' },
+      { text: ' 5  * * *  request timed out', cls: 'fail' },
       { text: '', cls: 'dim' },
-      { text: 'Website Not Found — belum ada situs terpasang', cls: 'miss' },
+      { text: 'destination unreachable — HTTP 404', cls: 'fail' },
     ];
     const term = document.getElementById('term');
     let delay = 550;
